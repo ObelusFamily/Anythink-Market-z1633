@@ -1,14 +1,12 @@
-import ItemList from "./ItemList";
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import agent from "../agent";
-import { connect } from "react-redux";
 import {
-  FOLLOW_USER,
-  UNFOLLOW_USER,
-  PROFILE_PAGE_LOADED,
-  PROFILE_PAGE_UNLOADED,
+  FOLLOW_USER, PROFILE_PAGE_LOADED,
+  PROFILE_PAGE_UNLOADED, UNFOLLOW_USER
 } from "../constants/actionTypes";
+import ItemList from "./ItemList";
 
 const EditProfileSettings = (props) => {
   if (props.isUser) {
@@ -126,8 +124,8 @@ class Profile extends React.Component {
     return (
       <div className="profile-page">
         <div className="container">
-          <div className="row p-4 text-center">
-            <div className="user-info col-xs-12 col-md-8 offset-md-2">
+          <div className="row p-4">
+            <div className="col text-center">
               <img
                 src={profile.image}
                 className="user-img"
