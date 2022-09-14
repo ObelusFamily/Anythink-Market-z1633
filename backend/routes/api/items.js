@@ -22,6 +22,23 @@ router.param("item", function(req, res, next, slug) {
     .catch(next);
 });
 
+// Preload item objects on routes with ':title'
+// router.param("title", function(req, res, next, title) {
+//   Item.findOne({title: title})
+//   .populate("seller")
+//   .then(function(item) {
+//     if (!item) {
+//       console.log("UH-OH");
+//       return res.sendStatus(404);
+//     }
+
+//     req.item = item;
+
+//     return next();
+//   })
+//   .catch(next)
+// })
+
 router.param("comment", function(req, res, next, id) {
   Comment.findById(id)
     .then(function(comment) {
@@ -169,6 +186,43 @@ router.get("/:item", auth.optional, function(req, res, next) {
     })
     .catch(next);
 });
+
+// // TODO return a list of items filtered by title
+// router.get("/apple", auth.optional, function(req, res, next) {
+//   res.send("APPLE")
+// });
+
+// router.get("/:title", auth.optional, function(req, res, next) {
+//   var limit = 20;
+//   var offset = 0;
+
+//   if (typeof req.query.limit !== "undefined") {
+//     limit = req.query.limit;
+//   }
+
+//   if (typeof req.query.offset !== "undefined") {
+//     offset = req.query.offset;
+//   }
+
+//   Promise.all([
+//     Item.find({ title: req.payload.title })
+//       .limit(Number(limit))
+//       .skip(Number(offset))
+//       .populate("seller")
+//       .exec(),
+//     Item.count({ title: req.payload.title })
+//   ])
+//     .then(function(results) {
+//       var items = results[0];
+//       var itemsCount = results[1];
+
+//       return res.json({
+//         items: items,
+//         itemsCount: itemsCount
+//       });
+//     })
+//     .catch(next);
+// })
 
 // update item
 router.put("/:item", auth.required, function(req, res, next) {
