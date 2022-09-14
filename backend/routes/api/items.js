@@ -70,6 +70,8 @@ router.get("/", auth.optional, function(req, res, next) {
     query.tagList = { $in: [req.query.tag] };
   }
 
+  
+
   Promise.all([
     req.query.seller ? User.findOne({ username: req.query.seller }) : null,
     req.query.favorited ? User.findOne({ username: req.query.favorited }) : null
@@ -95,20 +97,34 @@ router.get("/", auth.optional, function(req, res, next) {
           .sort({ createdAt: "desc" })
           .exec(),
         Item.count(query).exec(),
-        req.payload ? User.findById(req.payload.id) : null
+        req.payload ? User.findById(req.payload.id) : null,
+        req.query.title ? Item.find({title: {$regex: req.query.title, $options: "six"}}).populate("seller") : null
       ]).then(async function(results) {
         var items = results[0];
         var itemsCount = results[1];
         var user = results[2];
-        return res.json({
+        var filteredItems = results[3]
+
+        if (filteredItems) {
+          return res.json({
+            items: await Promise.all(
+              filteredItems.map(function(item) {
+                return item.toJSONFor(user);
+              })
+            ),
+          });
+        } else {
+          return res.json({
           items: await Promise.all(
             items.map(async function(item) {
               item.seller = await User.findById(item.seller);
               return item.toJSONFor(user);
             })
           ),
-          itemsCount: itemsCount
+          itemsCount: itemsCount,
         });
+        }
+        
       });
     })
     .catch(next);
@@ -385,5 +401,7 @@ router.delete("/:item/comments/:comment", auth.required, function(
     res.sendStatus(403);
   }
 });
+
+
 
 module.exports = router;
