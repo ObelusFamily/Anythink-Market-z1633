@@ -22,6 +22,23 @@ router.param("item", function(req, res, next, slug) {
     .catch(next);
 });
 
+// Preload item objects on routes with ':title'
+// router.param("title", function(req, res, next, title) {
+//   Item.findOne({title: title})
+//   .populate("seller")
+//   .then(function(item) {
+//     if (!item) {
+//       console.log("UH-OH");
+//       return res.sendStatus(404);
+//     }
+
+//     req.item = item;
+
+//     return next();
+//   })
+//   .catch(next)
+// })
+
 router.param("comment", function(req, res, next, id) {
   Comment.findById(id)
     .then(function(comment) {
@@ -53,6 +70,8 @@ router.get("/", auth.optional, function(req, res, next) {
     query.tagList = { $in: [req.query.tag] };
   }
 
+  
+
   Promise.all([
     req.query.seller ? User.findOne({ username: req.query.seller }) : null,
     req.query.favorited ? User.findOne({ username: req.query.favorited }) : null
@@ -78,20 +97,34 @@ router.get("/", auth.optional, function(req, res, next) {
           .sort({ createdAt: "desc" })
           .exec(),
         Item.count(query).exec(),
-        req.payload ? User.findById(req.payload.id) : null
+        req.payload ? User.findById(req.payload.id) : null,
+        req.query.title ? Item.find({title: {$regex: req.query.title, $options: "six"}}).populate("seller") : null
       ]).then(async function(results) {
         var items = results[0];
         var itemsCount = results[1];
         var user = results[2];
-        return res.json({
+        var filteredItems = results[3]
+
+        if (filteredItems) {
+          return res.json({
+            items: await Promise.all(
+              filteredItems.map(function(item) {
+                return item.toJSONFor(user);
+              })
+            ),
+          });
+        } else {
+          return res.json({
           items: await Promise.all(
             items.map(async function(item) {
               item.seller = await User.findById(item.seller);
               return item.toJSONFor(user);
             })
           ),
-          itemsCount: itemsCount
+          itemsCount: itemsCount,
         });
+        }
+        
       });
     })
     .catch(next);
@@ -169,6 +202,43 @@ router.get("/:item", auth.optional, function(req, res, next) {
     })
     .catch(next);
 });
+
+// // TODO return a list of items filtered by title
+// router.get("/apple", auth.optional, function(req, res, next) {
+//   res.send("APPLE")
+// });
+
+// router.get("/:title", auth.optional, function(req, res, next) {
+//   var limit = 20;
+//   var offset = 0;
+
+//   if (typeof req.query.limit !== "undefined") {
+//     limit = req.query.limit;
+//   }
+
+//   if (typeof req.query.offset !== "undefined") {
+//     offset = req.query.offset;
+//   }
+
+//   Promise.all([
+//     Item.find({ title: req.payload.title })
+//       .limit(Number(limit))
+//       .skip(Number(offset))
+//       .populate("seller")
+//       .exec(),
+//     Item.count({ title: req.payload.title })
+//   ])
+//     .then(function(results) {
+//       var items = results[0];
+//       var itemsCount = results[1];
+
+//       return res.json({
+//         items: items,
+//         itemsCount: itemsCount
+//       });
+//     })
+//     .catch(next);
+// })
 
 // update item
 router.put("/:item", auth.required, function(req, res, next) {
@@ -331,5 +401,7 @@ router.delete("/:item/comments/:comment", auth.required, function(
     res.sendStatus(403);
   }
 });
+
+
 
 module.exports = router;
