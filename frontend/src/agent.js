@@ -1,5 +1,5 @@
-import superagentPromise from "superagent-promise";
 import _superagent from "superagent";
+import superagentPromise from "superagent-promise";
 
 const superagent = superagentPromise(_superagent, global.Promise);
 
@@ -68,6 +68,7 @@ const Items = {
   update: (item) =>
     requests.put(`/items/${item.slug}`, { item: omitSlug(item) }),
   create: (item) => requests.post("/items", { item }),
+  search: (title) => requests.get(`/items?title=${title}`),
 };
 
 const Comments = {
