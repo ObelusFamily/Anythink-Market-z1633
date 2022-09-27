@@ -11,8 +11,9 @@ const Banner = (props) => {
             <span id="get-part" className="col-sm-2">
               A place to get
             </span>
-            <div id="search-box" className="col input-group">
+            <div className="col input-group">
               <input
+                id="search-box"
                 type="search"
                 className="form-control"
                 placeholder="What is it that you truly desire?"
