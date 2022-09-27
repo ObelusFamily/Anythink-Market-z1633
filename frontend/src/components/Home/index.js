@@ -2,8 +2,9 @@ import React from "react";
 import { connect } from "react-redux";
 import agent from "../../agent";
 import {
-  APPLY_TAG_FILTER, HOME_PAGE_LOADED,
-  HOME_PAGE_UNLOADED
+  APPLY_TAG_FILTER,
+  HOME_PAGE_LOADED,
+  HOME_PAGE_UNLOADED,
 } from "../../constants/actionTypes";
 import Banner from "./Banner";
 import MainView from "./MainView";
@@ -27,9 +28,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 class Home extends React.Component {
   state = {
-    filteredItems: null
-  }
-
+    filteredItems: null,
+  };
 
   componentWillMount() {
     const tab = "all";
@@ -47,22 +47,22 @@ class Home extends React.Component {
   }
 
   search = async (title) => {
-    const res = await fetch(`http://localhost:3000/api/items?title=${title}`)
-    const json = await res.json()
-    
+    const res = await fetch(`http://localhost:3000/api/items?title=${title}`);
+    const json = await res.json();
+
     this.setState({
-      filteredItems: json
-    })
-  }
+      filteredItems: json,
+    });
+  };
 
   render() {
     return (
       <div className="home-page">
-        <Banner search={this.search}/>
+        <Banner search={this.search} />
 
         <div className="container page">
           <Tags tags={this.props.tags} onClickTag={this.props.onClickTag} />
-          <MainView filteredItems={this.state.filteredItems}/>
+          <MainView filteredItems={this.state.filteredItems} />
         </div>
       </div>
     );

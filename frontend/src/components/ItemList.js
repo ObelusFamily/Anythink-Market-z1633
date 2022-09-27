@@ -15,7 +15,7 @@ const ItemList = (props) => {
     return (
       <div className="container py-2">
         <div className="row">
-            {props.filteredItems.items.map((item) => {
+          {props.filteredItems.items.map((item) => {
             return (
               <div className="col-sm-4 pb-2" key={item.slug}>
                 <ItemPreview item={item} />
@@ -23,7 +23,7 @@ const ItemList = (props) => {
             );
           })}
         </div>
-  
+
         <ListPagination
           pager={props.pager}
           itemsCount={props.itemsCount}
@@ -33,27 +33,25 @@ const ItemList = (props) => {
     );
   } else {
     return (
-    <div className="container py-2">
-      <div className="row">
+      <div className="container py-2">
+        <div className="row">
           {props.items.map((item) => {
-          return (
-            <div className="col-sm-4 pb-2" key={item.slug}>
-              <ItemPreview item={item} />
-            </div>
-          );
-        })}
+            return (
+              <div className="col-sm-4 pb-2" key={item.slug}>
+                <ItemPreview item={item} />
+              </div>
+            );
+          })}
+        </div>
+
+        <ListPagination
+          pager={props.pager}
+          itemsCount={props.itemsCount}
+          currentPage={props.currentPage}
+        />
       </div>
-
-      <ListPagination
-        pager={props.pager}
-        itemsCount={props.itemsCount}
-        currentPage={props.currentPage}
-      />
-    </div>
-  );
+    );
   }
-
-  
 };
 
 export default ItemList;
