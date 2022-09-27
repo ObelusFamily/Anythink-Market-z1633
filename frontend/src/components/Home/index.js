@@ -4,7 +4,7 @@ import agent from "../../agent";
 import {
   APPLY_TAG_FILTER,
   HOME_PAGE_LOADED,
-  HOME_PAGE_UNLOADED
+  HOME_PAGE_UNLOADED,
 } from "../../constants/actionTypes";
 import Banner from "./Banner";
 import MainView from "./MainView";
@@ -29,7 +29,7 @@ const mapDispatchToProps = (dispatch) => ({
 class Home extends React.Component {
   state = {
     filteredItems: null,
-    searchTitle: null
+    searchTitle: null,
   };
 
   componentWillMount() {
@@ -53,7 +53,7 @@ class Home extends React.Component {
 
     this.setState({
       filteredItems: json,
-      searchTitle: title
+      searchTitle: title,
     });
   };
 
@@ -64,7 +64,10 @@ class Home extends React.Component {
 
         <div className="container page">
           <Tags tags={this.props.tags} onClickTag={this.props.onClickTag} />
-          <MainView filteredItems={this.state.filteredItems} searchTitle={this.state.searchTitle} />
+          <MainView
+            filteredItems={this.state.filteredItems}
+            searchTitle={this.state.searchTitle}
+          />
         </div>
       </div>
     );
