@@ -13,7 +13,7 @@ const ItemList = (props) => {
 
   if (props.filteredItems && props.filteredItems.items.length === 0) {
     return (
-      <div id="empty" className="py-4 no-items">
+      <div id="empty" className="py-4 text-center no-items">
         No items found for "{props.searchTitle}"
       </div>
     );
