@@ -11,7 +11,13 @@ const ItemList = (props) => {
     return <div className="py-4 no-items">No items are here... yet.</div>;
   }
 
+  if (props.filteredItems && props.filteredItems.items.length === 0) {
+    return <div id="empty" className="py-4 no-items">No items found for "{props.searchTitle}"</div>;
+  }
+
   if (props.filteredItems) {
+    console.log(props.filteredItems);
+    console.log(props.filteredItems.items);
     return (
       <div className="container py-2">
         <div className="row">
