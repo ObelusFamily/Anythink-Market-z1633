@@ -8,10 +8,28 @@ const ItemList = (props) => {
   }
 
   if (props.items.length === 0) {
-    return <div className="py-4 no-items">No items are here... yet.</div>;
+    if (props.searchTitle) {
+      return (
+        <div id="empty" className="py-4 text-center no-items">
+          No items found for "{props.searchTitle}"
+        </div>
+      );
+    } else {
+      return <div className="py-4 no-items">No items are here... yet.</div>;
+    }
+  }
+
+  if (props.filteredItems && props.filteredItems.items.length === 0) {
+    return (
+      <div id="empty" className="py-4 text-center no-items">
+        No items found for "{props.searchTitle}"
+      </div>
+    );
   }
 
   if (props.filteredItems) {
+    console.log(props.filteredItems);
+    console.log(props.filteredItems.items);
     return (
       <div className="container py-2">
         <div className="row">
@@ -55,11 +73,3 @@ const ItemList = (props) => {
 };
 
 export default ItemList;
-
-// {props.filteredItems ? props.filteredItems.map((item) => {
-//   return (
-//     <div className="col-sm-4 pb-2" key={item.slug}>
-//       <ItemPreview item={item} />
-//     </div>
-//   );
-// })
